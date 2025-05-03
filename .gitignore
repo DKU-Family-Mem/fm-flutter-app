@@ -1,0 +1,115 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code 관련
+.vscode/
+*.code-workspace
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Firebase 관련 민감 정보
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
+/ios/firebase_app_id_file.json
+lib/firebase_options.dart
+
+# 로컬 환경 설정
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# 키스토어 파일
+*.keystore
+*.jks
+key.properties
+
+# 플랫폼 특정 파일
+/ios/Podfile.lock
+/ios/Pods/
+/android/.gradle/
+/android/local.properties
+/android/gradlew
+/android/gradlew.bat
+/android/gradle/wrapper/gradle-wrapper.jar
+
+# Fastlane 관련 (CI/CD)
+/fastlane/report.xml
+/fastlane/Preview.html
+/fastlane/screenshots
+/fastlane/test_output
+
+# 코드 커버리지 파일
+/coverage/
+
+# Cursor 관련 파일
+.cursor/
+
+# 추가적으로 제외할 파일들
+*.log.*
+*.tmp
+*.temp
+*.bak
+.fvm/
+.packages
+
+# 자동 생성 파일
+**/generated/
+**/generated_plugin_registrant.*
+
+# 네이티브 플랫폼 생성 파일
+**/ios/Flutter/App.framework
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/macos/Flutter/ephemeral/
+**/linux/flutter/ephemeral/
+**/windows/flutter/ephemeral/
+
+# FVM 관련 (Flutter Version Management)
+.fvm/flutter_sdk
+
+# Flutter Desktop
+**/linux/flutter/ephemeral
+**/macos/Flutter/ephemeral
+**/windows/flutter/ephemeral
+
+# 앱 배포 설정
+/ios/fastlane/
+/android/fastlane/
