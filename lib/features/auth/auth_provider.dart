@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../services/auth_service.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? _currentUser;
   bool _isLoading = false;
   String? _error;
@@ -88,6 +90,16 @@ class AuthProvider with ChangeNotifier {
       
       if (result != null) {
         _currentUser = result.user;
+        
+        // Firestore에 사용자 정보 저장 - familyId 추가
+        await _firestore.collection('users').doc(result.user!.uid).set({
+          'email': email,
+          'createdAt': Timestamp.now(),
+          'nickname': '이름없음',
+          'profileUrl': '',
+          'familyId': 'default_family', // 기본 가족 ID 설정
+        });
+        
         notifyListeners();
         return true;
       }
@@ -137,6 +149,21 @@ class AuthProvider with ChangeNotifier {
       
       if (result != null) {
         _currentUser = result.user;
+        
+        // Firestore에 사용자 정보 저장 또는 업데이트 - Google 로그인 사용자도 familyId 필드 추가
+        final userDoc = await _firestore.collection('users').doc(result.user!.uid).get();
+        
+        if (!userDoc.exists) {
+          // 신규 사용자인 경우
+          await _firestore.collection('users').doc(result.user!.uid).set({
+            'email': result.user!.email,
+            'nickname': result.user!.displayName ?? '이름없음',
+            'profileUrl': result.user!.photoURL ?? '',
+            'createdAt': Timestamp.now(),
+            'familyId': 'default_family', // 기본 가족 ID 설정
+          });
+        }
+        
         notifyListeners();
         return true;
       }

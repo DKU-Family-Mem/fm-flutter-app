@@ -10,6 +10,8 @@ import 'core/constants/app_colors.dart';
 import 'features/auth/auth_provider.dart' as app_auth;
 import 'features/auth/pages/login_screen.dart';
 import 'features/diary/diary_provider.dart';
+import 'features/chat/chat_provider.dart';
+import 'features/chat/pages/chat_screen.dart';
 import 'firebase_options.dart';
 import 'router/app_router.dart';
 import 'services/auth_service.dart';
@@ -56,6 +58,7 @@ class MyApp extends StatelessWidget {
           // 임시로 빈 객체 생성
           return DiaryProvider();
         }),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
         
         // Firebase Auth 상태
         StreamProvider<User?>.value(
@@ -118,6 +121,16 @@ class AuthWrapper extends StatelessWidget {
                   // Navigator.push(context, MaterialPageRoute(builder: (context) => DiaryListScreen()));
                 },
                 child: Text('다이어리 화면으로 이동'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => const ChatScreen())
+                  );
+                },
+                child: Text('가족 채팅 시작하기'),
               ),
             ],
           ),
