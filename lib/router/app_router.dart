@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../features/auth/pages/login_screen.dart';
 import '../features/auth/pages/signup_screen.dart';
+import '../features/auth/pages/welcome_screen.dart';
 import '../features/diary/pages/diary_list_screen.dart';
 import '../features/chat/pages/chat_screen.dart';
 import '../features/ai_diary/ai_diary_screen.dart';
@@ -11,7 +12,8 @@ import '../ui/home_screen.dart';
 
 class AppRouter {
   // 앱 라우트 정의
-  static const String home = '/';
+  static const String welcome = '/welcome';
+  static const String home = '/home';
   static const String login = '/login';
   static const String signup = '/signup';
   static const String diary = '/diary';
@@ -24,6 +26,9 @@ class AppRouter {
   // 라우트 생성 함수
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case welcome:
+        return MaterialPageRoute(builder: (_) => const WelcomeScreen());
+      
       case home:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       
@@ -81,6 +86,14 @@ class AppRouter {
   static void navigateToLoginAndClear() {
     navigatorKey.currentState!.pushNamedAndRemoveUntil(
       login,
+      (Route<dynamic> route) => false,
+    );
+  }
+  
+  // 웰컴 화면으로 이동하고 스택 초기화
+  static void navigateToWelcomeAndClear() {
+    navigatorKey.currentState!.pushNamedAndRemoveUntil(
+      welcome,
       (Route<dynamic> route) => false,
     );
   }

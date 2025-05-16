@@ -75,8 +75,8 @@ class MyApp extends StatelessWidget {
           // TODO: 전체 앱에 적용할 기본 테마 설정
         ),
         navigatorKey: AppRouter.navigatorKey,
-        // onGenerateRoute: AppRouter.generateRoute, // 라우터 설정 - 나중에 구현
-        home: const AuthWrapper(),
+        onGenerateRoute: AppRouter.generateRoute,
+        initialRoute: AppRouter.welcome, // 초기 라우트를 welcome으로 변경
       ),
     );
   }
