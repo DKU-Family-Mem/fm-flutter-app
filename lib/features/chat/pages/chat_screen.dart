@@ -68,7 +68,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (success) {
       _controller.clear();
-      // 스크롤을 맨 아래로 이동
       _scrollToBottom();
     } else if (chatProvider.error != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -87,7 +86,6 @@ class _ChatScreenState extends State<ChatScreen> {
         SnackBar(content: Text(chatProvider.error!)),
       );
     } else {
-      // 스크롤을 맨 아래로 이동
       _scrollToBottom();
     }
   }
@@ -141,42 +139,74 @@ class _ChatScreenState extends State<ChatScreen> {
                       }
 
                       final messages = snapshot.data!.docs;
-                      
-                      // 새 메시지가 있을 때 스크롤 맨 아래로 이동
-                      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+                      final List<Widget> messageWidgets = [];
 
-                      return ListView.builder(
-                        controller: _scrollController,
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final message = messages[index].data() as Map<String, dynamic>;
-                          final isMe = message['senderId'] == currentUser?.uid;
-                          final isImage = message['type'] == 'image';
+                      for (int i = 0; i < messages.length; i++) {
+                        final message = messages[i].data() as Map<String, dynamic>;
+                        final timestamp = (message['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now();
 
-                          return MessageBubble(
+                        bool showDateHeader = false;
+                        if (i == 0) {
+                          showDateHeader = true;
+                        } else {
+                          final prevTimestamp = (messages[i - 1].data() as Map<String, dynamic>)['timestamp']?.toDate();
+                          if (!_isSameDay(prevTimestamp, timestamp)) {
+                            showDateHeader = true;
+                          }
+                        }
+
+                        if (showDateHeader) {
+                          messageWidgets.add(
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Text(
+                                  _formatDateHeader(timestamp),
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        final isMe = message['senderId'] == currentUser?.uid;
+                        final isImage = message['type'] == 'image';
+
+                        messageWidgets.add(
+                          MessageBubble(
                             content: message['content'] ?? '',
                             senderName: message['senderName'] ?? '이름없음',
                             senderPhotoUrl: message['senderPhotoUrl'],
                             isMe: isMe,
                             isImage: isImage,
-                          );
-                        },
+                            timestamp: timestamp,
+                          ),
+                        );
+                      }
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+
+                      return ListView(
+                        controller: _scrollController,
+                        children: messageWidgets,
                       );
                     },
                   ),
                 ),
-                
+
                 // 메시지 입력 영역
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      // 이미지 전송 버튼
                       IconButton(
                         icon: const Icon(Icons.image),
                         onPressed: chatProvider.isLoading ? null : _sendImage,
                       ),
-                      // 메시지 입력 필드
                       Expanded(
                         child: TextField(
                           controller: _controller,
@@ -191,7 +221,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           onSubmitted: (_) => _sendMessage(),
                         ),
                       ),
-                      // 메시지 전송 버튼
                       IconButton(
                         icon: chatProvider.isLoading
                             ? const SizedBox(
@@ -208,5 +237,16 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
             ),
     );
+  }
+
+  bool _isSameDay(DateTime? a, DateTime? b) {
+    if (a == null || b == null) return false;
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  String _formatDateHeader(DateTime date) {
+    const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+    final weekday = weekdays[date.weekday % 7];
+    return '${date.year}년 ${date.month}월 ${date.day}일 $weekday요일';
   }
 }
